@@ -9,7 +9,7 @@ spec:
   - resource:
       name: cpu
       target:
-        averageValue: 50
+        averageValue: 100m
         type: AverageValue
     type: Resource
   minReplicas: 1
