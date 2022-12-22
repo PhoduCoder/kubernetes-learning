@@ -1,0 +1,26 @@
+Created a repo in github first and made it public. 
+
+Executed Commands
+
+git init 
+
+git remote add origin <https-link-for-github-repo>
+
+git status
+
+git add *
+
+git commit -m "Commiting-all-existing-manifest-files"
+
+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 : PAT classic token
+
+git push --set-upstream origin master
+
+Since password based authentication is no longer supported, we will have to use PAT tokens for pushing
+
+http://rogerdudler.github.io/git-guide/
+
+Read more about git merge
+
+and pull requests and merge /checkout 
+

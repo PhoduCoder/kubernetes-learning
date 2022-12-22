@@ -1,0 +1,131 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+
+Resources:
+  # Create the EKS cluster
+  EKSCluster:
+    Type: AWS::EKS::Cluster
+    Properties:
+      Name: CLUSTER_NAME
+      RoleArn: ROLE_ARN
+      VpcConfig:
+        SecurityGroupIds:
+          - SECURITY_GROUP_ID
+        SubnetIds:
+          - SUBNET_ID
+
+  # Create the CodePipeline for the DevSecOps pipeline
+  DevSecOpsPipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      ArtifactStore:
+        Type: S3
+        Location: BUCKET_NAME
+      Name: DevSecOpsPipeline
+      RoleArn: ROLE_ARN
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: SourceAction
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Version: 1
+                Provider: GitHub
+              Configuration:
+                Owner: OWNER
+                Repo: REPO_NAME
+                PollForSourceChanges: 'false'
+              OutputArtifacts:
+                - Name: SourceOutput
+              RunOrder: 1
+        - Name: Build
+          Actions:
+            - Name: BuildAction
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: 1
+                Provider: CodeBuild
+              InputArtifacts:
+                - Name: SourceOutput
+              OutputArtifacts:
+                - Name: BuildOutput
+              Configuration:
+                ProjectName: BuildProject
+              RunOrder: 1
+        - Name: Deploy
+          Actions:
+            - Name: DeployAction
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: 1
+                Provider: CloudFormation
+              InputArtifacts:
+                - Name: BuildOutput
+              Configuration:
+                ActionMode: CREATE_UPDATE
+                StackName: CLUSTER_NAME
+                Capabilities: CAPABILITY_IAM
+                RoleArn: ROLE_ARN
+              RunOrder: 1
+
+  # Create the CodeBuild project for building the CloudFormation templates
+  BuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: BuildProject
+      ServiceRole: ROLE_ARN
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:2.0
+        Type: LINUX_CONTAINER
+      Source:
+        Type: CODEPIPELINE
+      TimeoutInMinutes: 60
+
+  # Create the IAM role for the CodePipeline and CodeBuild service
+  PipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: PipelineRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codepipeline.amazonaws.com
+                - codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: PipelinePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:GetObjectVersion
+                  - s3:ListBucket
+                Resource: 'arn:aws:s3:::BUCKET_NAME/*'
+              - Effect: Allow
+                Action:
+                  - eks:CreateCluster
+                  - eks:DescribeCluster
+                  - eks:ListClusters
+                  - eks:UpdateClusterConfig
+                  - eks:UpdateClusterVersion
+                  - eks:DeleteCluster
+                Resource: '*'
+
+Outputs:
+  EKSClusterEndpoint:
+    Description: The endpoint for the EKS cluster
+    Value: !GetAtt EKSCluster.Endpoint
+  EKSClusterCertificateAuthority:
+    Description: The certificate authority data for the EKS cluster
+    Value: !GetAtt EKSCluster.CertificateAuthority.0.Data

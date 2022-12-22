@@ -1,0 +1,7 @@
+Set up the connection to the GitOps repository in your GitOps system. You will need to use the gitops_repository_url, gitops_user_access_key_id, and gitops_user_secret_access_key outputs from the Terraform script to authenticate with the repository.
+
+Push the Terraform configuration for the EKS cluster and Istio installation to the GitOps repository. This will allow the GitOps system to deploy and manage these resources.
+
+Use the GitOps system to deploy the EKS cluster and Istio installation by applying the configuration in the GitOps repository. The GitOps system will use the IAM access key and policy attached to the GitOps user to authenticate with AWS and deploy the resources.
+
+Once the EKS cluster and Istio installation have been deployed, you can use the cluster_endpoint and cluster_certificate_authority outputs from the Terraform script to connect to the cluster and begin deploying your applications.

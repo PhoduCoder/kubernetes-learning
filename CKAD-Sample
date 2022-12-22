@@ -1,0 +1,101 @@
+Sample CKAD questions
+
+=====
+Command to be switching context 
+kubectl config get-contexts 
+kubectl config use-context abc 
+
+======
+a) Create a pod using a specific image version 
+Expose a given port 
+
+Task 1 
+A web application requires a specific version of redis to be used as a cache.
+Create a pod with the following characteristics, and leave it running when complete:
+• The pod must run in the web namespace.
+The namespace has already been created
+• The name of the pod should be cache
+• Use the Ifccncf/redis image with the 3.2 tag
+• Expose port 6379
+
+Use imperative commands
+
+kubectl run <name-of-pod> --image=icnf/redis:6.3 --port 6379 -n <name-of-webspace>
+
+Task 2
+=====
+
+You are tasked to create a secret and consume the secret in a pod using environment variables as follow:
+Task
+• Create a secret named another-secret with a key/value pair; key1/value4
+• Start an nginx pod named nginx-secret using container image nginx, and add an environment variable
+exposing the value of the secret key key 1, using COOL_VARIABLE as the name for the environment
+variable inside the pod
+
+kubectl create secret generic some-secret --from-literal=key1=value4
+
+kubectl run mypod --image=nginx:stable -n web-ns 
+
+Now create a manifest and edit it to include the secrets as environment variables 
+
+======
+
+Task 3
+
+You are required to create a pod that requests a certain amount of CPU and memory, so it gets scheduled
+to-a node that has those resources available.
+• Create a pod named nginx-resources in the pod-resources namespace that requests a minimum of
+200m CPU and 1Gi memory for its container
+• The pod should use the nginx image
+• The pod-resources namespace has already been created
+
+requests and limits 
+
+=====
+
+Task 4 
+
+You are tasked to create a ConfigMap and consume the ConfigMap in a pod using a volume mount.
+Task
+Please complete the following:
+• Create a ConfigMap named another-config containing the key/value pair: key4/value3
+• start a pod named nginx-configmap containing a single container using the
+nginx image, and mount the key you just created into the pod under directory /also/a/path
+
+Again use imperative command 
+
+kubectl create cm test-config --from-literal=key5=value7
+
+====
+
+Task 5 
+
+Context
+Your application’s namespace requires a specific service account to be used.
+Task
+Update the app-a deployment in the production namespace to run as the restrictedservice service
+account. The service account has already been created.
+
+======
+
+Some other questions 
+
+https://matthewpalmer.net/kubernetes-app-developer/articles/ckad-practice-exam.html
+
+https://medium.com/bb-tutorials-and-thoughts/practice-enough-with-these-questions-for-the-ckad-exam-2f42d1228552
+
+
+
+=====
+
+Multi container pods 
+
+Create a Pod with three busy box containers with commands “ls; sleep 3600;”,
+ “echo Hello World; sleep 3600;” and “echo this is the third container; sleep 3600” respectively and check the status
+
+kubectl run busybox --image=busybox --restart=Never --dry-run -o yaml -- bin/sh -c "sleep 3600; ls" > multi-container.yaml
+
+To edit a command 
+
+Create a Pod with main container busybox and which executes this “while true; do echo ‘Hi I am from Main container’ >> /var/log/index.html;
+ sleep 5; done” and with sidecar container with nginx image which exposes on port 80. Use emptyDir Volume and mount this volume on path /var/log for busybox and on path /usr/share/nginx/html for nginx container. Verify both containers are running.
