@@ -1,0 +1,14 @@
+CKAD-Practice
+
+#Imperative command to run a pod
+#Create a pod
+kubectl run <name-of-pod> --image=nginx:latest
+
+#Delete a pod without waiting
+kubectl delete pod <pod-name> --force
+
+#create pod and also expose a port
+kubectl run <my-pod-name> --image=nginx --port 80 
+
+#Create busybox pod with a command "echo hello world"
+kubectl run mypod --image=busybox --command -- /bin/sh -c "echo hello world"
