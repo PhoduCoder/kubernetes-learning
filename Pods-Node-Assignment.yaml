@@ -6,7 +6,6 @@ Eg. Assigning a pod to a GPU enabled node
 Or assigning a windows pod to a windows node, assuming that 
 your cluster has both windows and linux nodes
 ====
-
 One way to do so is to use NodeSelector.
 Here you will label the node with a determined key value pair
 
@@ -64,5 +63,12 @@ spec:
 This is not a great way, since this won't scale in the best way
 Better is to label the node and then use nodeSelector in the pod spec
 =====
+
+Other options are to use
+Affinity and Anti-affinity
+as well as 
+Taints and tolerations.
+
+Will add more to this.
 
 
