@@ -18,3 +18,17 @@ kubectl get pod mypod -v=7
 # Helps you get other details of what's happening behind the scenes.
 kubectl get pod mypod -v=8
 kubectl get pod mypod -v=9
+
+#Creation of pods with a given set of labels
+kubectl run mypod --image=nginx -labels="env=test,app=myapp"
+
+#To query the pods with the labels
+#For a single label, -l works
+kubectl get pods -l "app=myapp"
+The above command lists the pod, but when i specify both the labels
+in the -l option, then it fails.
+
+#For the above scenario, use --selector
+kubectl get pods --selector "app=myapp,env=prod"
+
+#Creation of multipod containers
