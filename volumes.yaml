@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volumepod
+spec:
+  containers:
+  - name: firstcontainer
+    image: busybox:stable
+    command: ['sh','-c','echo "test write" > /tmp/data.txt; cat /tmp/data.txt']
+    volumeMounts:
+    - name: samplevolume
+      mountPath: /tmp
+  volumes:
+  - name: samplevolume
+    emptyDir: {}

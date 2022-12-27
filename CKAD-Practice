@@ -50,3 +50,5 @@ Then add two more containers in the manifest
 
 #If we wanted to check the utilization for the containers
 kubectl top pods <pod-name> --containers
+
+
