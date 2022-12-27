@@ -36,67 +36,6 @@ result in an error
 kubectl label pod mypod --overwrite dept=bu2
 
 =====
-Now how do we ensure that pods are assigned to a specific node?
-
-One way to do so is to use NodeSelector.
-Here you will label the node with a determined key value pair
-
-Then when creating the pod spec, you will add a NodeSelector section
-in the containers spec and provide the labels
-
-=====
-We labelled the minikube node with the env=test label
-kubectl label node minikube {env=test,app=testapp}
-
-Now we will have the pod spec look like below
-======
-apiVersion: v1
-kind: Pod
-metadata:
-  name: test
-spec:
-  containers:
-  - image: nginx
-    name: test
-    ports:
-    - containerPort: 80
-  nodeSelector:
-    env: prod
-=====
-You will see that the pod will always be in a pending state
-This is because it is looking for a node which has been 
-marked with the label env=prod
-====
-So to fix this, we can adopt one of the two ways
-1. let's change the pod spec
-with the nodeSelector with env as test
-OR 
-2. We can label the minikube node with env=prod
-using the below command
-kubectl label node minikube --overwrite env=prod
-====
-The second way is to specify nodeName in the spec of the pod
-
-apiVersion: v1
-kind: Pod
-metadata:
-  name: test
-spec:
-  nodeName: minikube
-  containers:
-  - image: nginx
-    name: test
-    ports:
-    - containerPort: 80
-  #nodeSelector:
-    #env: prod
-
-===
-This is not a great way, since this won't scale in the best way
-Better is to label the node and then use nodeSelector in the pod spec
-=====
-
-
 
 
 
