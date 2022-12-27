@@ -32,3 +32,18 @@ in the -l option, then it fails.
 kubectl get pods --selector "app=myapp,env=prod"
 
 #Creation of multipod containers
+#Create three busybox with various commands executed in each of them
+
+#This will have to be created using a manifest
+# We create the initial manifest using the --dry-run 
+# and -o yaml option in our first command
+# direct the output to a file and then
+# edit the file contents to have more containers
+# in it. 
+
+#Keep in mind that --dry-run option has to be specified
+# before the command option'
+
+kubectl run multicont --dry-run -o yaml --command -- /bin/sh -c "ls; sleep 3600" > multi.yaml
+
+Then add two more containers in the manifest
