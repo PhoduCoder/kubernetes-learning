@@ -59,5 +59,10 @@ kubectl top pods <pod-name> --containers
 # busybox and on path /usr/share/nginx/html for nginx container.
 # Verify both containers are running.
 
+STEPS :
+a) Create the pod template using the --dry-run command 
+b) Add the other container alongwith the volume
+c) Remember volume is to be added with the pod specs 
+while volumeMount is to be added at containerspec
 
 
