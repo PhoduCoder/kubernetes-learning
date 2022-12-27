@@ -1,0 +1,83 @@
+Labels Explained
+
+All objects in kubernetes have labels. This is a way to add key value pairs 
+to various kubernetes objects.
+
+One can append the --show-labels to each object 
+to list the set of labels already attached.
+
+Eg. To list all pods with their applied labels
+
+#####
+Gauravs-MBP:K8s alieninvader$ kubectl get pods --show-labels
+NAME                          READY   STATUS    RESTARTS   AGE    LABELS
+mypod                         2/2     Running   0          22m    <none>
+php-apache-5b56f9df94-r74qk   1/1     Running   0          7d3h   pod-template-hash=5b56f9df94,run=php-apache
+######
+
+To list all labels applied to nodes
+kubectl get nodes --show-labels
+Similarly, for svc or apiservices, just add a --show-labels at the end 
+
+==========
+Now how do you add a label to an apiresource object. For this , we will use
+the below command
+kubectl label <object> <object-name> key1=value1
+
+To add multiple labels, we separate the labels by a comma and include them in
+paranthesis.
+
+kubectl label pods mypod {app=testapp,dept=bu1}
+
+If --overwrite is true, then existing labels can be overwritten, otherwise attempting to overwrite a label will
+result in an error
+
+kubectl label pod mypod --overwrite dept=bu2
+
+=====
+Now how do we ensure that pods are assigned to a specific node?
+
+One way to do so is to use NodeSelector.
+Here you will label the node with a determined key value pair
+
+Then when creating the pod spec, you will add a NodeSelector section
+in the containers spec and provide the labels
+
+=====
+We labelled the minikube node with the env=test label
+kubectl label node minikube {env=test,app=testapp}
+
+Now we will have the pod spec look like below
+======
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test
+spec:
+  containers:
+  - image: nginx
+    name: test
+    ports:
+    - containerPort: 80
+  nodeSelector:
+    env: prod
+=====
+You will see that the pod will always be in a pending state
+This is because it is looking for a node which has been 
+marked with the label env=prod
+====
+So to fix this, we can adopt one of the two ways
+1. let's change the pod spec
+with the nodeSelector with env as test
+OR 
+2. We can label the minikube node with env=prod
+====
+
+
+
+
+
+
+
+
+
