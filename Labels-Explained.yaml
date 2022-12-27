@@ -36,6 +36,34 @@ result in an error
 kubectl label pod mypod --overwrite dept=bu2
 
 =====
+Labels Vs Annotations? What is the difference?
+
+Both represent metadata information about the objects.
+
+Labels are metadata assigned to objects for identification purposes.
+For instance, a service selects the backend pod using the labels on pods.
+
+Annotations are additional metadata that can be open-ended.
+It may be used for documentation purposes, 
+or it can be used for configuring an object.
+
+
+In the backend etcd database,
+Labels are indexed in Etcd and can be searched on. 
+Annotations can't be searched on
+Annotations are not generally used by K8s. 
+
+LABELS are for kubernetes
+while annotations are for USERS. 
+
+Labels values have a limit of 63 characters
+as opposed to annotations which can be small or large,
+structured or unstructured, and can include characters not permitted by labels. 
+
+=====
+
+
+
 
 
 
