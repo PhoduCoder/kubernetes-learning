@@ -12,3 +12,9 @@ kubectl run <my-pod-name> --image=nginx --port 80
 
 #Create busybox pod with a command "echo hello world"
 kubectl run mypod --image=busybox --command -- /bin/sh -c "echo hello world"
+
+#Describe pods with various verbosity 
+kubectl get pod mypod -v=7
+# Helps you get other details of what's happening behind the scenes.
+kubectl get pod mypod -v=8
+kubectl get pod mypod -v=9
