@@ -71,7 +71,29 @@ So to fix this, we can adopt one of the two ways
 with the nodeSelector with env as test
 OR 
 2. We can label the minikube node with env=prod
+using the below command
+kubectl label node minikube --overwrite env=prod
 ====
+The second way is to specify nodeName in the spec of the pod
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test
+spec:
+  nodeName: minikube
+  containers:
+  - image: nginx
+    name: test
+    ports:
+    - containerPort: 80
+  #nodeSelector:
+    #env: prod
+
+===
+This is not a great way, since this won't scale in the best way
+Better is to label the node and then use nodeSelector in the pod spec
+=====
 
 
 
