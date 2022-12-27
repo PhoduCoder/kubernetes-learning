@@ -47,3 +47,6 @@ kubectl get pods --selector "app=myapp,env=prod"
 kubectl run multicont --dry-run -o yaml --command -- /bin/sh -c "ls; sleep 3600" > multi.yaml
 
 Then add two more containers in the manifest
+
+#If we wanted to check the utilization for the containers
+kubectl top pods <pod-name> --containers
