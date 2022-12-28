@@ -65,4 +65,44 @@ b) Add the other container alongwith the volume
 c) Remember volume is to be added with the pod specs 
 while volumeMount is to be added at containerspec
 
+======
+
+Remember that the shortcut to create a pod was 
+kubectl run 
+The only mandatory argument required is --image
+However, you can supply a lot of other arguments such as 
+--port , --command.
+Also very handy is the --dry-run=client -o=yaml option that gives us
+an ability to save the object into a YAML manifest 
+without creating one
+
+=======
+
+Now let's move to Deployments 
+
+The imperative command to create a deployment is 
+kubectl create deploy <name-of-deploy> --image=nginx '
+
+As like with pods, you can save the manifest in a YAML file
+without creating the objects using the --dry-run=client
+and -o=yaml and storing it into a YAML file
+
+====
+
+Note that if you were to create a busybox deployment and trying to 
+execute some command, there is a slight change from pod, in that
+you don't have to specify the --command explicitly, rather you just pass
+a -- followed by command that you want to run. 
+
+As an example, 
+kubectl create deploy testdeploy --image=busybox --dryrun=client -o=yaml -- 
+/bin/sh -c "echo Hello World!; sleep 3600;" >> my-test-deploy.yaml 
+
+====
+
+You can label the deployments similarly as to how 
+you would label the pods or for that matter any other API resource
+
+kubectl label deploy <name-of-deploy> {env=test,bu=bu1}
+
 

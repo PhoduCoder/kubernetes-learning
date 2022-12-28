@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: pracboard
+  name: pracboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pracboard
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: pracboard
+    spec:
+      containers:
+      - command:
+        - /bin/sh
+        - -c
+        - echo hello world; sleep 3600;
+        image: busybox
+        name: busybox
+        resources: {}
+status: {}

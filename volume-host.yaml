@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-volume-hostpath
+spec:
+  containers:
+  - name: testone
+    image: busybox
+    command: ['sh','-c','cat /data/test.txt']
+    volumeMounts:
+    - name: hostvol
+      mountPath: /data
+  volumes:
+  - name: hostvol
+    hostPath:
+      path: /Users/alieninvader/Desktop/Target2023/K8s/
+      type: Directory
