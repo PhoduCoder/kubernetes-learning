@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: recurjob
+spec:
+  #completions: 5 # the same job will run 5 times one after the other
+  #If i wanted to run these jobs in parallel
+  parallelism: 3 # run three jobs in parallel
+  template:
+    metadata:
+    spec:
+      containers:
+      - command:
+        - date
+        image: busybox
+        name: recurjob
+      restartPolicy: Never
