@@ -105,4 +105,54 @@ you would label the pods or for that matter any other API resource
 
 kubectl label deploy <name-of-deploy> {env=test,bu=bu1}
 
+You can look for deploy with particular labels using the -l flag
+As an example,
+kubectl get deploy -l costcenter=3606,env=test,bu=dept1
 
+Annotations Syntax wise work the same, but there isn't a matching selector 
+that you can use to group Annotations wise, i.e. -l option 
+will only apply for labels and not Annotations
+
+====
+
+If you want to scale a deployment, two ways to approach this
+First is to add the replicas count in your manifest 
+The second option is to use the imperative command of kubectl scale deploy
+
+As an example, you will use something like below to scale the replica count to 4 for an nginx deployment
+
+kubectl scale deploy <name-of-deploy> --replicas=4
+
+====
+Editing the image of a pod,deploy,daemonset, statefulset,cronjob imperatively
+
+ kubectl set image (-f FILENAME | TYPE NAME) CONTAINER_NAME_1=CONTAINER_IMAGE_1 ... CONTAINER_NAME_N=CONTAINER_IMAGE_N
+[options]
+
+kubectl set image deploy/webserver nginx=busybox 
+
+===
+
+Kubectl rollout commands are useful to manage the rollouts of 
+deployments
+daemonsets
+statefulsets
+
+kubectl rollout status deploy/abc
+get the status of rollout of deployments, daemonsets
+and statefulsets
+
+# Rollback to the previous deployment
+  kubectl rollout undo deployment/abc
+
+  kubectl rollout history deploy/abc
+====
+To autoscale 
+kubectl autoscale deploy <name> --cpu-percent=40 --min=1 --max=10
+===
+Creating Jobs 
+
+kubectl create job <name-of-job> --image=node --dry-run=client 
+-o=yaml -- node -v >> job-manifest-sample.yaml
+
+====
