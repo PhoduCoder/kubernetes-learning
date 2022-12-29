@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: practice
+  name: practice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: practice
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: practice
+    spec:
+      containers:
+      - command:
+        - /bin/sh
+        - -c
+        - while true; do cat /data/data.txt; done;
+        image: busybox
+        name: busybox-reader
+        volumeMounts:
+        - name: myvol
+          mountPath: /data
+      - command:
+        - /bin/sh
+        - -c
+        #- while true; do echo "Hello from Gaurav" | tee -a /data/data.txt; done;
+        - echo "Hello World" | tee -a /data/data.txt ; sleep 3600
+        image: busybox
+        name: busybox-writer
+        volumeMounts:
+        - name: myvol
+          mountPath: /data
+      volumes:
+      - name: myvol
+        emptyDir: {}
