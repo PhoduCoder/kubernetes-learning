@@ -180,3 +180,39 @@ PVC is what ties a request for a storage to a PV
 In your pod/deployment manifest, you should
 specify PVC in the volume TYPE
 
+The retain policy for PV can be 
+either reclaim or delete. 
+
+For dynamically provisioned PersistentVolumes, the default reclaim policy is "Delete"
+
+To change from delete to reclaim , use
+=====
+kubectl patch pv <your-pv-name> -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
+
+=====
+
+For reclaim, the PV is not deleted
+nor the underlying storage asset.
+The PV is although considered released
+But this PV is not available for another reclaim
+
+For delete, the PV alongwith the storage asset is
+deleted. 
+Volumes that were dynamically provisioned inherit 
+the reclaim policy of their StorageClass, 
+which defaults to Delete
+
+Say when a pod is using a PVC 
+and someone manually deletes the PVC or the PV
+because of the K8s finalizers attached to these resources
+these are not deleted or terminated immediately.
+
+Once the pod with the PVC claim is deleted is 
+when these PV and PVCs will be deleted. 
+
+You can reserve a PV for a given PVC
+by specifying that PVC claimRef in its manifest
+
+===
+Understanding Access Modes
+
