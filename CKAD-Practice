@@ -156,3 +156,27 @@ kubectl create job <name-of-job> --image=node --dry-run=client
 -o=yaml -- node -v >> job-manifest-sample.yaml
 
 ====
+Creating cronjobs 
+
+You only have to add a schedule in the cron format 
+
+kubectl create cronjob my-job --image=busybox --schedule="*/1 * * * *" -- date
+
+====
+
+kubectl create job recurjob --image=busybox --dry-run=client -o=yaml -- date >> test-job.yam
+l
+
+Define parallelism to configure number of jobs in parallel
+Define completions as say 'n' if you want to run n jobs one after the 
+other in succession
+
+====
+
+Persistence 
+
+PV is what to storage as Node is to compute
+PVC is what ties a request for a storage to a PV
+In your pod/deployment manifest, you should
+specify PVC in the volume TYPE
+

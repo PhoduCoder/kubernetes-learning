@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: test2
+  name: test2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test2
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: test2
+    spec:
+      containers:
+      - command:
+        - /bin/sh
+        - -c
+        - ls | tee -a /data/data.txt ; sleep 3600
+        image: busybox
+        name: busybox-writer
+        volumeMounts:
+        - name: testvol
+          mountPath: /data
+      - command:
+        - /bin/sh
+        - -c
+        - while true; do cat /data/data.txt done;
+        image: busybox
+        name: busybox-reader
+        volumeMounts:
+        - name: testvol
+          mountPath: /data
+      volumes:
+      - name: testvol
+        emptyDir: {}
