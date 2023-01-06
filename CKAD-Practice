@@ -216,3 +216,92 @@ by specifying that PVC claimRef in its manifest
 ===
 Understanding Access Modes
 
+====
+
+ConfigMaps for unconfidential information
+Eg. database host 
+1 MiB limit 
+
+CM has data or binarydata fields
+instead of spec 
+
+Both data and binarydata are optional
+
+data fields => UTF-8 strings
+binarydata => base64-enccoded string 
+
+name of cm => valid DNS subdomain
+
+Each key must be alphanumeric or contain 
+.,_,-
+
+The keys stored in data must not overlap with the
+keys in the binaryData field.
+
+you can add an immutable field to a ConfigMap definition 
+to create an immutable ConfigMap.
+
+There are various ways to consume a cm
+using as env variables in your containers
+or mounting them as volumes 
+
+one of the advantages of using cm as mounted volumes 
+instead of env variables 
+is that with cm mounted as volumes
+they are automatically updated for the containers , when the cm is updated
+whereas for env variables they require 
+a restart of the pods
+
+The kubelet checks whether the mounted ConfigMap is fresh on every periodic sync.
+even with volumes mounted configmap, there is some delay
+which equals 
+kubelet sync period + cache propagation delay
+
+A container using a ConfigMap as a subPath volume mount will NOT receive ConfigMap updates.
+
+by adding immutable: true 
+prevents changes to cm. 
+
+Once a cm is marked immutable 
+it is not possible 
+to change the contents of  cm 
+and you must delete and create a new cm. 
+=====
+
+There are two imperative ways to create configmap
+One is from-literal where you can pass 
+key=value pairs from command line
+
+Other is to use --from-file 
+
+Examples
+
+kubectl create cm testcm1 --from-literal=key1=value1
+#In this case we can only have one key 
+
+Say if we wanted to create more than one keys using 
+this literal method, one hack is to do the following 
+
+kubectl create cm testliteral --from-literal=key1=value1 \
+--dry-run=client -o=yaml >> test-cm.yaml 
+
+Then create one more key value in this test-cm.yaml
+
+Other and easier way is to just repeat the same thing again
+kubectl create cm cm-name --from-literal=key1=value1 --from-literal=key2=value2
+
+
+TIP:
+If you wanted to create a file from command line
+using echo but wanted to have it contain newline symbols
+You should use the echo with -e as an option 
+
+Command:
+echo -e "app=MyApp\nenv=prod\nauthor=grv" | tee -a ui.properties
+
+#To create configmap from a given file
+kubectl create cm file-cm --from-file=app.properties
+
+#To create configmap from all files within a directory
+kubectl create cm dir-cm --from-file=config/
+
