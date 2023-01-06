@@ -19,20 +19,19 @@ spec:
       - command:
         - /bin/sh
         - -c
-        - echo hello world; sleep 3600
+        - echo hello world; echo $APPNAME; sleep 3600
         image: busybox
         name: busybox
+        env: 
+        - name: APPNAME
+          valueFrom:
+            configMapKeyRef:
+              name: literal-cm
+              key: appname
         volumeMounts:
         - name: testvol
           mountPath: /data
       volumes:
       - name: testvol
         configMap:
-          name: cm-file
-        # env: 
-        # - name: APPNAME
-        #   valueFrom:
-        #     configMapKeyRef:
-        #       name: cm-file
-        #       key: app.properties
-
+          name: mult-file-cm
