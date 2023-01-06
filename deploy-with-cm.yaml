@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: deploy-with-cm
+  name: deploy-with-cm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deploy-with-cm
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: deploy-with-cm
+    spec:
+      containers:
+      - command:
+        - /bin/sh
+        - -c
+        - echo hello world; echo $APPNAME; sleep 3600
+        image: busybox
+        name: busybox
+        env: 
+        - name: APPNAME
+          valueFrom:
+            configMapKeyRef:
+              name: testcm
+              key: appname
