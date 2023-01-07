@@ -305,3 +305,68 @@ kubectl create cm file-cm --from-file=app.properties
 #To create configmap from all files within a directory
 kubectl create cm dir-cm --from-file=config/
 
+=====
+TIP: 
+To refer to what all options are available for each apiresource
+Use the 
+kubectl explain command
+
+Example:
+kubectl explain pod.spec.containers
+Will list out all the different specification for containers within a pod
+
+====
+
+Secrets
+
+Much like ConfigMaps,secrets are also used to pass 
+information to pods. 
+However secrets are meant for sensitive data and 
+contains data and stringdata instead of 
+data and binarydata instead of spec 
+like configmaps.
+
+Much like configmap, secrets can also 
+be mounted either as volumes 
+or passed as environment variables.
+
+Secrets like configmap also have a size limit of 1Mib
+
+===
+Image pulling secrets 
+When kubelet downloads image 
+from a private container registry, you can 
+configure "image pull secrets" to authenticate the 
+kubelet to a private registry from which the kubelet pulls 
+the image from.
+
+====
+MANUAL WAY
+Note that for this you will have to specify
+the name of the secret in the pod spec
+under the imagePullSecrets section 
+as name : <Name-of-that-secret>
+==
+AUTOMATED WAY USING SERVICE ACCOUNT 
+Another way is to create the image pull secret 
+and then use it for a service account
+and then specify the serviceaccount for the pod
+Read more here
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#add-imagepullsecrets-to-a-service-account
+===
+Also note that this secret has to be of the TYPE
+kubernetes.io/dockercfg or kubernetes.io/dockerconfigjson
+===
+When kubelet needs to fetch registry credentials
+dynamically, then use Kubelet credential provider
+Approach mostly used by AWS and other cloud providers. 
+
+Read more here : https://kubernetes.io/docs/tasks/administer-cluster/kubelet-credential-provider/
+====
+CREATION OF Secrets
+To create secret imperatively, we can create three types of secrets
+a) generic [ Created from file, directory or literal]
+b) tls [Create a TLS secret from the given public/private key pair]
+c) docker-registry : These are used to authenticate against docker private registries
+from where the kubelet can pull images from 
+
