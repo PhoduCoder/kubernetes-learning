@@ -369,4 +369,23 @@ a) generic [ Created from file, directory or literal]
 b) tls [Create a TLS secret from the given public/private key pair]
 c) docker-registry : These are used to authenticate against docker private registries
 from where the kubelet can pull images from 
+===
+Note that in secrets and configmap, when mounting as volume
+The volumes sections differ a bit. 
+****
+In configmap, here is how the volumes look like
 
+volumes:
+- name: test-volume
+  configMap: 
+    name: my-cm 
+
+However in case of secrets, the volumes are like this 
+****
+volumes:
+- name: test-volume
+  secret:
+    secretName: my-secret
+    items: "file-name-that-you-want-from-directory"
+    path: "file-name-that-you-want-from-directory"
+====
