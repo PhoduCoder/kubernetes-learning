@@ -25,10 +25,13 @@ kubectl run mypod --image=nginx -labels="env=test,app=myapp"
 #To query the pods with the labels
 #For a single label, -l works
 kubectl get pods -l "app=myapp"
-The above command lists the pod, but when i specify both the labels
-in the -l option, then it fails.
 
-#For the above scenario, use --selector
+For multiple labels using -l option, use a ; in between
+kubectl get pods -l app=myapp;env=test
+kubectl get pods -l app=myapp,env=test 
+Also works
+
+use --selector also works 
 kubectl get pods --selector "app=myapp,env=prod"
 
 #Creation of multipod containers
@@ -81,7 +84,7 @@ without creating one
 Now let's move to Deployments 
 
 The imperative command to create a deployment is 
-kubectl create deploy <name-of-deploy> --image=nginx '
+kubectl create deploy <name-of-deploy> --image=nginx 
 
 As like with pods, you can save the manifest in a YAML file
 without creating the objects using the --dry-run=client
@@ -389,3 +392,198 @@ volumes:
     items: "file-name-that-you-want-from-directory"
     path: "file-name-that-you-want-from-directory"
 ====
+
+Exposing a deployment using service
+
+kubectl expose deployment nginx --port 80 --target-port 80 --name mysvcname
+
+====
+
+Network Policies 
+
+By default, all ingress and egress connections to pods
+are allowed. 
+One can attach a network policy 
+that selects the pod and has either of the two 
+policyTypes - egress or ingress. 
+
+The only allowed egress connections in those
+cases are those allowed by the egress list 
+similarly for ingress list 
+
+Note that these are additive
+
+======
+
+How to label [No -l required]
+
+kubectl label pod/test  {bu=bu1,env=prod}
+kubectl label deploy/nginx {owner=grv,env=prod}
+
+Show labels
+kubectl get pods --show-labels
+
+Find resources with given labels
+kubectl get pods -l bu=bu1;env=test
+-l : serves as selector 
+
+Remember to use "," to separate labels
+and enclose them in paranthesis. 
+====
+Services are created using selector 
+or without selector
+
+kubectl expose pod/test --selector bu=bu1;app=test --port 80 --name mysvc
+
+The above statement will create a service that exposes the 
+pod test and selects using the selector. 
+
+If you don't specify the selector argument 
+then the service will use all the labels for the 
+corresponding pod as selector 
+
+However if you don't specify the 
+selector while exposing deployment,
+then the service by default choses 
+app:<name-of-deploy> as selector 
+
+You can also specify the --target-port for the
+port on which the container is running. 
+
+
+One can also describe a service without any selectors
+in this case, you will have to manually 
+create an endpointslice object that actually
+represents the backend for the service. 
+
+You link an EndpointSlice to a Service by setting the kubernetes.io/service-name label on that EndpointSlice.
+
+This is typically used when you want to
+create a service with backend outside of k8s cluster 
+
+EndpointSlice are the replacements for endpoints
+===
+
+Headless service 
+
+Sometimes you want to connect to pod directly 
+instead of service IP 
+
+eg. stateful nodes [ mysql with active/passive]
+always want to connect to active node say 
+
+So you will use a headless service
+In that the clusterIP is specified as None
+====
+Each connection to the service is forwarded to one randomly 
+selected backing pod. But what if the client needs to connect
+to all of those pods? What if the backing pods themselves need
+to each connect to all the other backing pods. Connecting 
+through the service clearly isn’t the way to do this. What is?
+
+
+For a client to connect to all pods, 
+it needs to figure out the the IP of each individual pod.
+One option is to have the client call the Kubernetes API server
+and get the list of pods and their IP addresses through an API call,
+but because you should always strive to keep your apps 
+Kubernetes-agnostic, using the API server isn’t ideal.
+
+Luckily, Kubernetes allows clients to discover pod IPs 
+through DNS lookups. Usually, when you perform a DNS lookup 
+for a service, the DNS server returns a single IP 
+— the service’s cluster IP. 
+But if you tell Kubernetes you don’t need a cluster IP
+for your service (you do this by setting the clusterIP field to None
+ in the service specification ), 
+the DNS server will return the pod IPs instead of the single
+service IP. Instead of returning a single DNS A record, 
+the DNS server will return multiple A records for the service,
+each pointing to the IP of an individual pod backing the service
+at that moment. Clients can therefore do a simple DNS A record 
+lookup and get the IPs of all the pods that are part of the service.
+The client can then use that information to connect to one, 
+many, or all of them.
+
+Setting the clusterIP field in a service spec to None makes the service headless, as Kubernetes won’t assign it a cluster IP through which clients could connect to the pods backing it.
+
+====
+Default type of service is clusterIP.
+The other type of service is NodePort
+In this case, your service is available 
+on a port [30000-32767] on the nodes of your K8s cluster
+
+If you don't specify a NodePort in your config,
+then K8s will randomly pick a port from 
+30000-32767 range and allocate that to your service. 
+Remember that service port and NodePort are two 
+distinct things and so is TargetPort
+TargetPort -> port on which container is listening.
+Port -> port on which clusterIP service is listening
+NodePort -> port on the node where your service is 
+exposed and accessible externally to cluster
+using your node-ip:node-port 
+
+Note that when we specify a NodePort in our manifest
+we have to make sure that this nodeport is within 
+the 32000-32767 range and there is no port collisions
+===
+type = LoadBalancer
+Creates a CLB in EKS.
+===
+Depending on the cloud provider, when you create a 
+LoadBalancer service, you can also see a NodePort
+service created. 
+If you wanted to avoid creation of NodePort service, 
+you can set "spec.allocateLoadBalancerNodePorts" to false 
+in your manifest and that would not create a nodeport service. 
+
+However this depends on the cloud provider implementation. 
+=====
+If you wanted to create a NLB in AWS when creating 
+a service of type LoadBalancer,
+you will have to add an annotation 
+
+    metadata:
+      name: my-service
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+======
+ExternalName Type 
+You can use a type of ExternalName
+to map a service to a DNS name. 
+
+This should be done in sceanrios where we are trying 
+to reach out to external Services outside our cluster
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+  namespace: prod
+spec:
+  type: ExternalName
+  externalName: my.database.example.com
+====
+When looking up the host my-service.prod.svc.cluster.local, the cluster DNS Service 
+returns a CNAME record with the value my.database.example.com.
+
+One can use externalName service type to 
+not only access services outside the cluster
+such as RDS or DocumentDB cluster
+but you can also use it 
+to access any services outside the namespace.
+
+===
+
+
+
+
+
+
+
+
+
+
+
+

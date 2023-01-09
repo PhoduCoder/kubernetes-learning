@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  app.properties: |
+    app=MyApp
+    env=prod
+    author=grv
+kind: ConfigMap
+metadata:
+  name: cm-file
+  namespace: default

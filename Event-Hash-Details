@@ -1,0 +1,27 @@
+Env Details 
+
+Event Hash :  813d-149a6bf2f4-65
+
+
+Running a mongoDB docker container locally
+======
+Do a docker login to your docker hub 
+====
+docker pull mongo
+
+docker run -d --name mymongodb -p 27017:27017 \
+-e MONGO_INITDB_ROOT_USERNAME=root \
+-e MONGO_INITDB_ROOT_PASSWORD=root123 mongo   
+
+get inside mongodb 
+
+docker exec -it mymongodb bash
+
+
+=====
+Run the docker container for products 
+
+docker run -p 5000:5000 -d products:latest 
+
+====
+

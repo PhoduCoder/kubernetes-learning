@@ -1,0 +1,36 @@
+Try-outs 
+
+Create a service in VPC with --external-IP
+set to any ENI on the VPC 
+
+Create a service of type LoadBalancer in EKS
+and set spec.allocateLoadBalancerNodePorts to false
+and see if NodePorts creation is avoided
+
+Create a LoadBalancer in EKS 
+Annotate it with 
+metadata:
+      name: my-service
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+
+And see what happens with preserving the client IP
+
+Set the .spec.externalTrafficPolicy to Local : This should 
+forward the client IP to pods
+
+See what happens when .spec.externalTrafficPolicy is set to Cluster
+then the client IP won't be forwarded
+
+===
+Try to configure a service using type
+ExternalName [ create a public RDS endpoint] [Or a public webserver]
+also try to configure a service using
+service without selectors and endpoint slices
+
+====
+Create a service with priavte RDS endpoint 
+Try using the endpoint slices vs externamName
+when to use which one?
+====
+
