@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: webpod
+  name: webpod
+spec:
+  containers:
+  - image: nginx
+    name: webpod
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

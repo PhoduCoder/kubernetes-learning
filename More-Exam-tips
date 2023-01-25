@@ -1,0 +1,46 @@
+To create a configmap 
+from a file with a specific key 
+
+kubectl create cm test1 --from-file=key1=filename.txt
+
+kubectl create cm webmoon-cm --from-file=index.html=web-moon.html 
+
+web-moon.html is saved on the local disk and 
+we are trying to copy its contents to a configmap 
+
+===
+Use CTRL+ shift + C to copy in ubunttu
+
+Copy by selecting and don't reply on 
+k8s documentation copy 
+====
+Practice more of converting from pods manifest
+to deployment 
+
+=====
+
+Expose a pod as a service with selector
+
+kubectl expose pod/name-of-pod -n <namespace> 
+<service-name> --port 80 --target-port 3333
+--selector key=value 
+
+====
+
+Create pod with specific label 
+and then create a service using that label as selector example
+
+kubectl run -n pluto project-pod --image=nginx --labels="project=proja"
+
+kubectl expose pod/project-pod --selector project=proja --port 80 
+--target-port 3333
+==
+
+Practice a few initcontainers and sidecar creation
+with volume mounts
+
+===
+
+
+
+

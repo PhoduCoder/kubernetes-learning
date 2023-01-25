@@ -575,6 +575,37 @@ but you can also use it
 to access any services outside the namespace.
 
 ===
+More on Network Policy
+
+By default, all egress and ingress communication to 
+pods are allowed.
+Pods in one namespace can reach to pods in other namespace
+
+However, in many production scenarios, you 
+won’t want that level of openness
+
+So we can use NetworkPolicy to help restrict communication.
+
+The way NetworkPolicy works is by creating a 
+K8s object called NetworkPolicy[NP]
+
+That NP has two things 
+a) policyType - which can be egress or ingress
+b) There would also be a selector. This will specify 
+which pods or namespaces will this NP apply to
+
+The overall structure of a network policy is 
+apiversion 
+metadata [contains name and any labels you would want to associate]
+spec 
+status 
+
+Under the spec, we have the podSelector, which is a required
+field.
+We can use labels to select the pods to which the NP 
+applies to.
+You can also select all the pods in the current namespace 
+by leaving the field in podSelector empty 
 
 
 
