@@ -1,0 +1,65 @@
+Labels and Selector Notes
+
+To query resources, use -l option 
+Eg.
+kubectl get pods -l app=myapp
+
+You can query using the -l option for a single label 
+or even using multiple Labels.
+In case of using -l with multiple labels, we need to separate labels 
+using ; or ,
+
+kubectl get pods -n mars -l app=mars,env=test
+OR
+kubectl get pods -n mars -l app=mars;env=test
+========================
+Getting all labels , just add --show-labels option
+
+Eg. 
+kubectl get svc -n mars --show-labels
+
+========================
+Setting Labels
+
+Use the kubectl label command 
+
+kubectl label pod env=prod
+
+When setting multiple labels, we will have to comma separate
+and enclose them in paranthesis{}
+
+kubectl label pod {app=myapp,env=prod}
+===========================
+
+Note that paranthesis is only used in case of multiple labels
+when setting the labels not querying 
+
+============================
+SEARCH AND APPLY LABEL IN ONE GO
+
+We can use kubectl label with -l option to search for particular pods
+and supply the labels in {}, if multiple labels are involved.
+
+Eg.
+
+kubectl label pods -l app=myapp,env=prod {author=grv,k2=v2,k3=v3}
+============================
+
+To overwrite any keys, add the --overwrite option 
+
+============================
+
+ANNOTATIONS ARE SIMILAR 
+
+Use the kubectl annotate instead of kubectl label 
+
+kubectl -n mars annotate pods -l app=mars,env=test {author=gaurav,commit-id=xxxyyyy}
+
+=============================
+
+
+
+
+
+
+

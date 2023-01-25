@@ -1,0 +1,18 @@
+Helm 
+
+To list all releases
+
+helm -n <ns> ls 
+
+helm -n <ns> ls -a 
+
+helm -n <ns> install release-name chart-name 
+
+helm -n <ns> upgrade release-name chart-name 
+
+Get values from a chart 
+
+helm show values chart-name 
+
+helm install release-name chart-name --set key1=value1
+
