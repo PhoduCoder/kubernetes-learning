@@ -1,0 +1,8 @@
+helm upgrade ack-lambda-controller oci://public.ecr.aws/aws-controllers-k8s/lambda-chart -n ack-system -f custom-values.yaml
+
+cat custom-values.yaml
+reconcile:
+    defaultResyncPeriod: 180
+aws:
+  region: "us-west-2"
+
