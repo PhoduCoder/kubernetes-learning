@@ -6,3 +6,5 @@ reconcile:
 aws:
   region: "us-west-2"
 
+# Issue https://github.com/aws-controllers-k8s/community/issues/1689
+
